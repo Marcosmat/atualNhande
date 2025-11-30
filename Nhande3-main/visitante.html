@@ -22,6 +22,10 @@
       <div style="display:flex;gap:18px;align-items:center;">
         <a class="brand" href="index.html" aria-label="Ir para a página inicial">Nhandé</a>
       </div>
+      <div class="top-search" style="display:flex;align-items:center;gap:12px;margin-left:18px;flex:1">
+        <input id="global-search" type="search" placeholder="Pesquisar..." style="width:100%;max-width:420px;padding:8px 12px;border-radius:8px;border:1px solid rgba(0,0,0,0.08);">
+        <button id="global-search-btn" class="btn-primary" style="padding:8px 12px;border-radius:8px;">Buscar</button>
+      </div>
       <div style="display:flex; align-items:center; gap:18px;">
         <div style="opacity:.85">Painel — Visitante</div>
         <a href="index.html" class="btn-login">Sair</a>
@@ -55,6 +59,26 @@
         <ul id="materials-list" class="simple-list">
           <!-- Conteúdo populado via JS -->
         </ul>
+      </section>
+
+      <!-- Views específicas do visitante (ocultas) -->
+      <section id="view-acervo" class="list-section" style="display:none;">
+        <h3>Acervo</h3>
+        <p>Explore o acervo público com materiais abertos para visitantes.</p>
+        <ul class="simple-list">
+          <li>Guia Rápido — Como usar o acervo</li>
+          <li>Atividade 1 — Observação de campo</li>
+        </ul>
+      </section>
+
+      <section id="view-recursos" class="list-section" style="display:none;">
+        <h3>Recursos</h3>
+        <p>Materiais educativos e vídeos disponíveis para visitantes.</p>
+      </section>
+
+      <section id="view-ajuda" class="list-section" style="display:none;">
+        <h3>Ajuda</h3>
+        <p>Se precisar de suporte, entre em contato com a equipe do Nhandé.</p>
       </section>
 
     </section>
@@ -151,5 +175,14 @@
 
     })();
   </script>
+  <div class="a11y-controls" aria-hidden="false">
+    <button id="font-decrease" class="font-control" aria-label="Diminuir fonte" title="Diminuir fonte">A-</button>
+    <button id="accessibility-toggle" aria-pressed="false" aria-label="Ativar alto contraste" title="Ativar alto contraste" class="accessibility-toggle" aria-live="polite">
+      <span class="a11y-icon" aria-hidden="true">⚫️</span>
+      <span class="a11y-label">Alto contraste</span>
+    </button>
+    <button id="font-increase" class="font-control" aria-label="Aumentar fonte" title="Aumentar fonte">A+</button>
+  </div>
+  <script src="./script.js"></script>
 </body>
 </html>

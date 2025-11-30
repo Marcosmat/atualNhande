@@ -36,7 +36,8 @@ document.querySelectorAll('.nav-links a').forEach(a => {
 // ---------- Comportamento do modal de login ----------
 (function(){
   const modal = document.getElementById('modal-entrar');
-  const openButtons = document.querySelectorAll('a[href="#entrar"], .btn-login');
+  // Apenas abrir modal para elementos que explicitamente apontam para '#entrar' ou marcados com data-open-login
+  const openButtons = document.querySelectorAll('a[href="#entrar"], [data-open-login="true"]');
   const closeElements = modal ? modal.querySelectorAll('[data-close]') : [];
   const firstInput = modal ? modal.querySelector('#login-email') : null;
   let lastFocused = null;
@@ -129,6 +130,65 @@ document.querySelectorAll('.nav-links a').forEach(a => {
   }
 })();
 
+// ---------- Simples alternador de views para Aluno e Visitante ----------
+(function(){
+  const body = document.body;
+  if(!body.classList.contains('aluno') && !body.classList.contains('visitante')) return;
+
+  const panelActions = document.querySelectorAll('.panel-actions .action');
+  if(!panelActions || panelActions.length === 0) return;
+
+  function toId(text){
+    return 'view-' + text.toLowerCase().trim().replace(/\s+/g,'-').replace(/[^a-z0-9\-]/g,'');
+  }
+
+  function restoreDefault(){
+    const main = document.querySelector('.panel-main');
+    if(!main) return;
+    // show grid and the first non-view list-section
+    const grid = main.querySelector('.panel-grid'); if(grid) grid.style.display = 'grid';
+    Array.from(main.querySelectorAll('[id^="view-"]')).forEach(el => el.style.display = 'none');
+    const defaultList = main.querySelector('.list-section:not([id^="view-"])');
+    if(defaultList) defaultList.style.display = 'block';
+    // restore header title
+    const title = main.querySelector('.panel-title'); if(title) title.textContent = body.classList.contains('aluno') ? 'Painel do Aluno' : 'Bem-vindo';
+  }
+
+  function showOnly(idToShow, label){
+    // hide all view- sections inside .panel-main
+    const main = document.querySelector('.panel-main');
+    if(!main) return;
+    Array.from(main.querySelectorAll('[id^="view-"]')).forEach(el => el.style.display = 'none');
+    // also hide default grid/list
+    const grid = main.querySelector('.panel-grid'); if(grid) grid.style.display = 'none';
+    const defaultList = main.querySelector('.list-section:not([id^="view-"])');
+    if(defaultList) defaultList.style.display = 'none';
+
+    const target = document.getElementById(idToShow);
+    if(target){
+      target.style.display = '';
+      const title = main.querySelector('.panel-title'); if(title && label) title.textContent = label;
+    } else {
+      // if there's no matching view, restore default
+      restoreDefault();
+    }
+  }
+
+  // Map clicks from side menu to views
+  panelActions.forEach(btn => {
+    btn.addEventListener('click', function(){
+      const text = (this.textContent || this.innerText || '').trim();
+      const id = toId(text);
+      // If user clicked 'Visão Geral' (or similar), restore default
+      if(/visao|visão|visao-geral|visao-geral|geral/i.test(text)){
+        restoreDefault();
+        return;
+      }
+      showOnly(id, text);
+    });
+  });
+})();
+
 // ---------- Comportamento do modal de cadastro (Aluno/Professor/Visitante) ----------
 (function(){
   const modal = document.getElementById('modal-cadastrar');
@@ -204,11 +264,25 @@ document.querySelectorAll('.nav-links a').forEach(a => {
     const role = modal.querySelector('.register-choices .choice[aria-checked="true"]').dataset.role;
     const name = form.querySelector('#reg-nome').value.trim();
     const email = form.querySelector('#reg-email').value.trim();
+    const passField = form.querySelector('#reg-pass');
+    const passConfirmField = form.querySelector('#reg-pass-confirm');
+    const password = passField ? passField.value.trim() : '';
+    const passwordConfirm = passConfirmField ? passConfirmField.value.trim() : '';
     const matricula = form.querySelector('#reg-matricula');
     const matriculaFunc = form.querySelector('#reg-matricula-func');
 
     if(!name || !email){
       alert('Por favor preencha nome e e-mail.');
+      return;
+    }
+
+    // Senha obrigatória para todos os tipos de conta
+    if(!password){
+      alert('Por favor informe uma senha.');
+      return;
+    }
+    if(password !== passwordConfirm){
+      alert('Senhas não conferem. Por favor verifique.');
       return;
     }
 
@@ -227,7 +301,7 @@ document.querySelectorAll('.nav-links a').forEach(a => {
       role,
       name,
       email,
-      password: 'demo-password',
+      password: password,
       matricula: matricula && matricula.value.trim() ? matricula.value.trim() : undefined,
       matricula_funcional: matriculaFunc && matriculaFunc.value.trim() ? matriculaFunc.value.trim() : undefined
     };
@@ -487,3 +561,459 @@ document.querySelectorAll('.nav-links a').forEach(a => {
     })
     .catch(err => { setStatus(false); console.warn('Erro ao checar backend:', err); });
 })();
+
+// ---------- Gerenciamento dinâmico do painel do Professor (Turmas view) ----------
+(function(){
+  const body = document.body;
+  // Verificar se estamos na página professor.html
+  if(!body.classList.contains('professor')) return;
+
+  const panelMain = document.querySelector('.panel-main');
+  if(!panelMain) return;
+
+  // Elementos principais
+  const defaultContent = document.querySelector('.panel-header:not(#turmas-view .panel-header)'); // cabeçalho padrão
+  const panelGrid = document.querySelector('.panel-grid');
+  const turmasView = document.getElementById('turmas-view');
+  const materiaisView = document.getElementById('materiais-view');
+  const listSection = document.querySelector('.list-section:not(.turmas-list-section)');
+
+  const panelActions = document.querySelectorAll('.panel-actions .action');
+  const btnCreateTurma = document.getElementById('btn-create-turma');
+  const modalCriarTurma = document.getElementById('modal-criar-turma');
+  const formCriarTurma = document.getElementById('form-criar-turma');
+  const turmasList = document.getElementById('turmas-list-container');
+
+  // Função para mostrar apenas um conteúdo
+  function showView(viewName){
+    // Ocultar todos os conteúdos
+    if(panelGrid) panelGrid.style.display = 'none';
+    if(listSection) listSection.style.display = 'none';
+    if(turmasView) turmasView.style.display = 'none';
+
+    // Mostrar cabeçalho padrão dependendo da view
+    if(defaultContent && viewName !== 'turmas'){
+      defaultContent.style.display = 'block';
+    } else if(defaultContent){
+      defaultContent.style.display = 'none';
+    }
+
+    // Mostrar a view requisitada
+    if(viewName === 'turmas'){
+      if(turmasView) turmasView.style.display = 'block';
+    } else if(viewName === 'materiais'){
+      if(materiaisView) materiaisView.style.display = 'block';
+    } else if(viewName === 'visao-geral'){
+      if(panelGrid) panelGrid.style.display = 'grid';
+      if(listSection) listSection.style.display = 'block';
+      if(defaultContent) defaultContent.style.display = 'block';
+    }
+  }
+
+  // Event listeners para os botões do menu lateral
+  panelActions.forEach((btn, idx) => {
+    btn.addEventListener('click', function(){
+      const text = this.textContent.trim();
+      if(text === 'Turmas'){
+        showView('turmas');
+      } else if(text === 'Visão Geral'){
+        showView('visao-geral');
+      } else if(text === 'Materiais'){
+        showView('materiais');
+      }
+      // Outros botões podem ser implementados futuramente
+    });
+  });
+
+  // Modal para criar turma
+  function openModalCriarTurma(){
+    if(!modalCriarTurma) return;
+    modalCriarTurma.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+  }
+
+  // ---------- Materiais: upload, anexar do repo e busca ----------
+  const inputUpload = document.getElementById('input-upload-file');
+  const repoFilesEl = document.getElementById('repo-files');
+  const repoListEl = document.getElementById('repo-list');
+  const btnAttachRepo = document.getElementById('btn-attach-repo');
+  const materiaisListEl = document.getElementById('materiais-list');
+  const searchInput = document.getElementById('materiais-search');
+  const btnSearch = document.getElementById('btn-search');
+
+  const MATERIALS_KEY = 'nhande_materials_v1';
+
+  function loadMaterials(){
+    try{ const raw = localStorage.getItem(MATERIALS_KEY); return raw ? JSON.parse(raw) : []; }catch(e){ return []; }
+  }
+  function saveMaterials(list){ try{ localStorage.setItem(MATERIALS_KEY, JSON.stringify(list)); }catch(e){} }
+
+  function renderMaterials(){
+    const items = loadMaterials();
+    materiaisListEl.innerHTML = items.length ? items.map(it => `\n      <li class=\"material-item\">\n        <div style=\"display:flex;align-items:center;justify-content:space-between;gap:12px\">\n          <div style=\"display:flex;gap:12px;align-items:center\">${it.thumbnail ? `<img src=\"${it.thumbnail}\" style=\"width:52px;height:40px;object-fit:cover;border-radius:6px\">` : ''}<div><strong>${escapeHtml(it.name)}</strong><br/><small>${escapeHtml(it.source)}</small></div></div>\n          <div><a href=\"${it.url || '#'}\" target=\"_blank\" class=\"btn-secondary\">Abrir</a> <button class=\"btn-back material-delete\" data-id=\"${it.id}\">Remover</button></div>\n        </div>\n      </li>\n    `).join('') : '<li class="muted">Nenhum material enviado.</li>';
+  }
+
+  // Initialize render if view exists
+  if(materiaisListEl) renderMaterials();
+
+  // Handle file input upload
+  if(inputUpload){
+    inputUpload.addEventListener('change', function(e){
+      const f = this.files && this.files[0];
+      if(!f) return;
+      const reader = new FileReader();
+      reader.onload = function(ev){
+        const dataUrl = ev.target.result;
+        const list = loadMaterials();
+        const item = { id: Date.now(), name: f.name, source: 'Local upload', url: dataUrl, thumbnail: dataUrl };
+        list.unshift(item);
+        saveMaterials(list);
+        renderMaterials();
+        alert('Arquivo anexado com sucesso.');
+      };
+      reader.readAsDataURL(f);
+      // clear input
+      this.value = '';
+    });
+  }
+
+  // Toggle repo files list
+  if(btnAttachRepo && repoFilesEl){
+    btnAttachRepo.addEventListener('click', function(){
+      repoFilesEl.style.display = repoFilesEl.style.display === 'none' ? 'block' : 'none';
+    });
+  }
+
+  // Attach repo file click
+  if(repoListEl){
+    repoListEl.addEventListener('click', function(e){
+      const btn = e.target.closest('.repo-attach');
+      if(!btn) return;
+      const src = btn.dataset.src;
+      const name = src.split('/').pop();
+      const list = loadMaterials();
+      const item = { id: Date.now(), name: name, source: 'Repositório', url: src, thumbnail: src };
+      list.unshift(item);
+      saveMaterials(list);
+      renderMaterials();
+      alert('Arquivo do repositório anexado.');
+    });
+  }
+
+  // Search repo (filter visible repo list items)
+  if(btnSearch && searchInput && repoListEl){
+    btnSearch.addEventListener('click', function(){
+      const q = (searchInput.value || '').toLowerCase().trim();
+      Array.from(repoListEl.querySelectorAll('li')).forEach(li => {
+        const txt = li.textContent.toLowerCase();
+        li.style.display = q ? (txt.indexOf(q) === -1 ? 'none' : '') : '';
+      });
+      // show repo list when searching
+      if(repoFilesEl) repoFilesEl.style.display = 'block';
+    });
+  }
+
+  // Remove material
+  materiaisListEl && materiaisListEl.addEventListener('click', function(e){
+    const btn = e.target.closest('.material-delete');
+    if(!btn) return;
+    const id = btn.dataset.id;
+    if(!confirm('Remover este material?')) return;
+    let list = loadMaterials();
+    list = list.filter(i => String(i.id) !== String(id));
+    saveMaterials(list);
+    renderMaterials();
+  });
+
+  // ---------- Pesquisa global (barra superior) ----------
+  const globalSearch = document.getElementById('global-search');
+  const globalSearchBtn = document.getElementById('global-search-btn');
+
+  function performGlobalSearch(q){
+    if(!q) return;
+    q = q.toLowerCase();
+    // Se estamos na view Materiais, encaminhar para pesquisa específica
+    if(materiaisView && materiaisView.style.display !== 'none'){
+      if(searchInput){ searchInput.value = q; btnSearch && btnSearch.click(); }
+      return;
+    }
+    // Se estamos na view Turmas, filtrar a lista de turmas
+    if(turmasView && turmasView.style.display !== 'none'){
+      Array.from(document.querySelectorAll('#turmas-list-container .turmas-item')).forEach(li => {
+        const name = li.querySelector('.turmas-item-name')?.textContent.toLowerCase() || '';
+        li.style.display = name.indexOf(q) === -1 ? 'none' : '';
+      });
+      return;
+    }
+    // Caso geral: filtrar cards e listas na área principal
+    if(panelGrid){
+      Array.from(panelGrid.querySelectorAll('.card')).forEach(card => {
+        const txt = card.textContent.toLowerCase();
+        card.style.display = txt.indexOf(q) === -1 ? 'none' : '';
+      });
+    }
+    if(listSection){
+      Array.from(listSection.querySelectorAll('li')).forEach(li => {
+        const txt = li.textContent.toLowerCase();
+        li.style.display = txt.indexOf(q) === -1 ? 'none' : '';
+      });
+    }
+  }
+
+  if(globalSearchBtn){ globalSearchBtn.addEventListener('click', function(){ performGlobalSearch(globalSearch.value || ''); }); }
+  if(globalSearch){ globalSearch.addEventListener('keydown', function(e){ if(e.key === 'Enter'){ performGlobalSearch(globalSearch.value || ''); } }); }
+
+  function closeModalCriarTurma(){
+    if(!modalCriarTurma) return;
+    modalCriarTurma.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+    // Limpar formulário
+    if(formCriarTurma) formCriarTurma.reset();
+  }
+
+  // Botão para criar turma
+  if(btnCreateTurma){
+    btnCreateTurma.addEventListener('click', openModalCriarTurma);
+  }
+
+  // Fechar modal ao clicar no backdrop ou em botões com data-close
+  if(modalCriarTurma){
+    modalCriarTurma.querySelectorAll('[data-close]').forEach(btn => {
+      btn.addEventListener('click', closeModalCriarTurma);
+    });
+    modalCriarTurma.querySelector('.modal-backdrop')?.addEventListener('click', closeModalCriarTurma);
+  }
+
+  // ESC para fechar modal
+  window.addEventListener('keydown', function(e){
+    if(e.key === 'Escape' && modalCriarTurma && modalCriarTurma.getAttribute('aria-hidden') === 'false'){
+      closeModalCriarTurma();
+    }
+  });
+
+  // Submissão do formulário
+  if(formCriarTurma){
+    formCriarTurma.addEventListener('submit', function(e){
+      e.preventDefault();
+      const nome = document.getElementById('turma-nome').value.trim();
+      const serie = document.getElementById('turma-serie').value.trim();
+      const capacidade = document.getElementById('turma-capacidade').value.trim();
+
+      if(!nome || !serie || !capacidade){
+        alert('Por favor, preencha todos os campos.');
+        return;
+      }
+
+      // Criar novo item na lista
+      const novoItem = document.createElement('li');
+      novoItem.className = 'turmas-item';
+      novoItem.innerHTML = `
+        <div class="turmas-item-content">
+          <span class="turmas-item-name">${escapeHtml(nome)}</span>
+          <button class="turmas-item-action" data-turma="${slugify(nome)}">Gerenciar</button>
+        </div>
+      `;
+
+      if(turmasList){
+        turmasList.appendChild(novoItem);
+      }
+
+      // Limpar e fechar modal
+      closeModalCriarTurma();
+      alert(`Turma "${nome}" criada com sucesso!`);
+    });
+  }
+
+  // Função auxiliar: escape HTML
+  function escapeHtml(str){
+    if(!str) return '';
+    return String(str)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
+
+  // Função auxiliar: converter para slug
+  function slugify(str){
+    return str.toLowerCase().trim().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
+  }
+
+  // --- Gerenciar: menu contextual e modal de disciplinas ---
+  // Estrutura em memória para disciplinas por turma (slug -> array)
+  // Persistência de disciplinas por turma em localStorage
+  const TURMA_DISC_KEY = 'nhande_turma_disciplines_v1';
+  function loadTurmaDisc(){
+    try{ const raw = localStorage.getItem(TURMA_DISC_KEY); return raw ? JSON.parse(raw) : {}; }catch(e){ return {}; }
+  }
+  function saveTurmaDisc(obj){ try{ localStorage.setItem(TURMA_DISC_KEY, JSON.stringify(obj)); }catch(e){} }
+
+  let turmaDisciplines = loadTurmaDisc();
+
+  // Inicializar com turmas existentes (garantir chaves mesmo sem disciplinas)
+  if(turmasList){
+    Array.from(turmasList.querySelectorAll('.turmas-item')).forEach(li => {
+      const btn = li.querySelector('.turmas-item-action');
+      const slug = btn ? btn.dataset.turma : null;
+      if(slug && !turmaDisciplines[slug]) turmaDisciplines[slug] = [];
+    });
+    // se criamos novas chaves, persistir
+    saveTurmaDisc(turmaDisciplines);
+  }
+
+  // Criar menu contextual único (floating)
+  const contextMenu = document.createElement('div');
+  contextMenu.className = 'context-menu';
+  contextMenu.style.display = 'none';
+  contextMenu.innerHTML = `
+    <button data-action="rename">Renomear turma</button>
+    <button data-action="delete">Excluir turma</button>
+    <button data-action="list">Listar disciplinas</button>
+    <button data-action="add">Adicionar nova disciplina</button>
+  `;
+  document.body.appendChild(contextMenu);
+
+  let activeMenuTarget = null; // elemento botão que abriu o menu
+
+  function closeContextMenu(){
+    contextMenu.style.display = 'none';
+    activeMenuTarget = null;
+  }
+
+  // Abrir menu na posição do botão
+  function openContextMenuFor(button){
+    const rect = button.getBoundingClientRect();
+    // Mostrar temporariamente para medir largura/altura
+    contextMenu.style.display = 'flex';
+    contextMenu.style.position = 'absolute';
+    contextMenu.style.visibility = 'hidden';
+    // Calcular posição: abaixo do item (rect.bottom), alinhado à esquerda do botão
+    const desiredLeft = window.scrollX + rect.left;
+    const desiredTop = window.scrollY + rect.bottom + 8; // pequeno gap
+
+    // Forçar leitura da largura do menu
+    const menuWidth = contextMenu.offsetWidth || 200;
+    const maxRight = window.scrollX + window.innerWidth - 12; // margem
+    let left = desiredLeft;
+    if(left + menuWidth > maxRight){
+      left = Math.max(window.scrollX + 12, maxRight - menuWidth);
+    }
+
+    contextMenu.style.left = left + 'px';
+    contextMenu.style.top = desiredTop + 'px';
+    contextMenu.style.visibility = 'visible';
+    activeMenuTarget = button;
+  }
+
+  // Delegação de cliques na lista de turmas
+  if(turmasList){
+    turmasList.addEventListener('click', function(e){
+      const target = e.target;
+      if(target.classList.contains('turmas-item-action')){
+        e.stopPropagation();
+        // Toggle menu
+        if(activeMenuTarget === target && contextMenu.style.display === 'flex'){
+          closeContextMenu();
+          return;
+        }
+        openContextMenuFor(target);
+      }
+    });
+  }
+
+  // Fechar menu ao clicar fora
+  document.addEventListener('click', function(e){
+    if(!contextMenu.contains(e.target)) closeContextMenu();
+  });
+
+  // Handlers das ações do menu
+  contextMenu.addEventListener('click', function(e){
+    const action = e.target.getAttribute('data-action');
+    if(!action || !activeMenuTarget) return;
+    const li = activeMenuTarget.closest('.turmas-item');
+    const nameEl = li.querySelector('.turmas-item-name');
+    const slug = activeMenuTarget.dataset.turma;
+
+        if(action === 'rename'){
+      const novo = prompt('Novo nome da turma:', nameEl.textContent.trim());
+      if(novo && novo.trim()){
+        nameEl.textContent = novo.trim();
+        // atualizar slug no botão
+        const newSlug = slugify(novo);
+        activeMenuTarget.dataset.turma = newSlug;
+            // manter disciplinas se mudarmos a chave
+            if(turmaDisciplines[slug]){
+              turmaDisciplines[newSlug] = turmaDisciplines[slug];
+              delete turmaDisciplines[slug];
+              saveTurmaDisc(turmaDisciplines);
+            }
+      }
+    } else if(action === 'delete'){
+      if(confirm('Excluir esta turma? Esta ação não pode ser desfeita.')){
+        // remover do DOM e da memória
+            if(turmaDisciplines[slug]) { delete turmaDisciplines[slug]; saveTurmaDisc(turmaDisciplines); }
+        li.parentElement.removeChild(li);
+      }
+    } else if(action === 'list' || action === 'add'){
+      // Abrir modal de disciplinas
+      const modal = document.getElementById('modal-disciplinas');
+      const modalTurmaName = document.getElementById('modal-turma-name');
+      const disciplinasListEl = document.getElementById('disciplinas-list');
+      const inputDisc = document.getElementById('disc-nome');
+
+        if(modal && modalTurmaName && disciplinasListEl){
+        modalTurmaName.textContent = nameEl.textContent.trim();
+        // popular lista
+          const arr = turmaDisciplines[slug] || [];
+        disciplinasListEl.innerHTML = arr.length ? arr.map(d => `<li>${escapeHtml(d)}</li>`).join('') : '<li class="muted">Nenhuma disciplina cadastrada.</li>';
+        modal.setAttribute('aria-hidden', 'false');
+        document.body.style.overflow = 'hidden';
+        // focar no input se for adicionar
+        if(action === 'add' && inputDisc){
+          inputDisc.focus();
+        }
+        // armazenar a turma atual no atributo do modal
+        modal.dataset.currentTurma = slug;
+      }
+    }
+
+    closeContextMenu();
+  });
+
+  // Hooks para modal-disciplinas: fechar, backdrop, submissão de nova disciplina
+  const modalDisciplinas = document.getElementById('modal-disciplinas');
+  if(modalDisciplinas){
+    modalDisciplinas.querySelectorAll('[data-close]').forEach(btn => btn.addEventListener('click', function(){
+      modalDisciplinas.setAttribute('aria-hidden','true');
+      document.body.style.overflow = '';
+    }));
+    modalDisciplinas.querySelector('.modal-backdrop')?.addEventListener('click', function(){
+      modalDisciplinas.setAttribute('aria-hidden','true');
+      document.body.style.overflow = '';
+    });
+
+    // ESC fecha modal
+    window.addEventListener('keydown', function(e){ if(e.key === 'Escape' && modalDisciplinas.getAttribute('aria-hidden') === 'false'){ modalDisciplinas.setAttribute('aria-hidden','true'); document.body.style.overflow = ''; } });
+
+    const formAddDisc = document.getElementById('form-add-disciplina');
+    if(formAddDisc){
+      formAddDisc.addEventListener('submit', function(ev){
+        ev.preventDefault();
+        const input = document.getElementById('disc-nome');
+        const nome = input && input.value.trim();
+        const modal = document.getElementById('modal-disciplinas');
+        const slug = modal ? modal.dataset.currentTurma : null;
+        const disciplinasListEl = document.getElementById('disciplinas-list');
+        if(!nome){ alert('Informe o nome da disciplina.'); return; }
+        turmaDisciplines[slug] = turmaDisciplines[slug] || [];
+        turmaDisciplines[slug].push(nome);
+        // persistir e atualizar lista no modal
+        saveTurmaDisc(turmaDisciplines);
+        disciplinasListEl.innerHTML = turmaDisciplines[slug].map(d => `<li>${escapeHtml(d)}</li>`).join('');
+        formAddDisc.reset();
+      });
+    }
+  }
+})();
+

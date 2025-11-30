@@ -12,6 +12,10 @@
       <div style="display:flex;gap:18px;align-items:center;">
         <a class="brand" href="index.html" aria-label="Ir para a página inicial">Nhandé</a>
       </div>
+        <div class="top-search" style="display:flex;align-items:center;gap:12px;margin-left:18px;flex:1">
+          <input id="global-search" type="search" placeholder="Pesquisar..." style="width:100%;max-width:420px;padding:8px 12px;border-radius:8px;border:1px solid rgba(0,0,0,0.08);">
+          <button id="global-search-btn" class="btn-primary" style="padding:8px 12px;border-radius:8px;">Buscar</button>
+        </div>
       <div style="display:flex; align-items:center; gap:18px;">
         <div style="opacity:.85">Painel — Professor</div>
         <a href="index.html" class="btn-login">Sair</a>
@@ -25,9 +29,6 @@
         <button class="action">Visão Geral</button>
         <button class="action">Turmas</button>
         <button class="action">Materiais</button>
-        <button class="action">Atividades</button>
-        <button class="action">Avaliações</button>
-        <button class="action">Participantes</button>
         <button class="action">Mensagens</button>
         <button class="action">Configurações</button>
       </div>
@@ -49,13 +50,158 @@
       <section class="list-section">
         <h3>Turmas atribuídas</h3>
         <ul class="simple-list">
-          <li>Turma A — Ensino Fundamental</li>
-          <li>Turma B — Ensino Médio</li>
+          <li>Língua Indígena — Ensino Fundamental</li>
+          <li>Arte Indígena — Ensino Médio</li>
           <li>Projeto Interdisciplinar — Comunidade</li>
         </ul>
       </section>
 
+      <!-- Vista dinâmica de Turmas (inicialmente oculta) -->
+      <div id="turmas-view" class="turmas-view" style="display:none;">
+        <div class="panel-header">
+          <div class="panel-title">Minhas Turmas</div>
+          <div class="panel-sub">Gerenciamento de turmas e alunos</div>
+        </div>
+
+        <button id="btn-create-turma" class="btn-primary turma-action-btn">+ Criar nova turma</button>
+
+        <section class="list-section turmas-list-section">
+          <h3>Turmas atribuídas</h3>
+          <ul class="simple-list turmas-list" id="turmas-list-container">
+            <li class="turmas-item">
+              <div class="turmas-item-content">
+                <span class="turmas-item-name">Língua Indígena — Ensino Fundamental</span>
+                <button class="turmas-item-action" data-turma="turma-a">Gerenciar</button>
+              </div>
+            </li>
+            <li class="turmas-item">
+              <div class="turmas-item-content">
+                <span class="turmas-item-name">Arte Indígena — Ensino Médio</span>
+                <button class="turmas-item-action" data-turma="turma-b">Gerenciar</button>
+              </div>
+            </li>
+            <li class="turmas-item">
+              <div class="turmas-item-content">
+                <span class="turmas-item-name">Projeto Interdisciplinar — Comunidade</span>
+                <button class="turmas-item-action" data-turma="projeto-inter">Gerenciar</button>
+              </div>
+            </li>
+          </ul>
+        </section>
+      </div>
+
+      <!-- Vista dinâmica de Materiais (inicialmente oculta) -->
+      <div id="materiais-view" class="materiais-view" style="display:none;">
+        <div class="panel-header">
+          <div class="panel-title">Materiais</div>
+          <div class="panel-sub">Gerencie arquivos do repositório e envie novos materiais</div>
+        </div>
+
+        <div class="materiais-actions" style="margin-bottom:18px; display:flex; gap:12px; align-items:center; flex-wrap:wrap;">
+          <label class="btn-primary turma-action-btn" style="cursor:pointer;">
+            Anexar arquivo
+            <input id="input-upload-file" type="file" style="display:none" />
+          </label>
+
+          <button id="btn-attach-repo" class="btn-secondary">Anexar do repositório</button>
+
+          <div style="margin-left:auto; display:flex; gap:8px; align-items:center;">
+            <input id="materiais-search" type="search" placeholder="Pesquisar no repositório" style="padding:8px 10px; border-radius:8px; border:1px solid rgba(0,0,0,0.08);">
+            <button id="btn-search" class="btn-primary" style="padding:8px 12px; border-radius:8px;">Pesquisar</button>
+          </div>
+        </div>
+
+        <!-- Lista de arquivos do repositório (toggle) -->
+        <div id="repo-files" style="display:none; margin-bottom:16px;">
+          <h4 style="margin-bottom:8px;">Arquivos do repositório</h4>
+          <ul class="simple-list repo-list" id="repo-list">
+            <li data-src="imagens/1.jpeg">1.jpeg <button class="repo-attach" data-src="imagens/1.jpeg">Anexar</button></li>
+            <li data-src="imagens/2.jpeg">2.jpeg <button class="repo-attach" data-src="imagens/2.jpeg">Anexar</button></li>
+            <li data-src="imagens/3.jpeg">3.jpeg <button class="repo-attach" data-src="imagens/3.jpeg">Anexar</button></li>
+            <li data-src="imagens/4.jpeg">4.jpeg <button class="repo-attach" data-src="imagens/4.jpeg">Anexar</button></li>
+            <li data-src="imagens/5.jpg">5.jpg <button class="repo-attach" data-src="imagens/5.jpg">Anexar</button></li>
+            <li data-src="imagens/6.jpg">6.jpg <button class="repo-attach" data-src="imagens/6.jpg">Anexar</button></li>
+            <li data-src="imagens/imgMissao1.jpeg">imgMissao1.jpeg <button class="repo-attach" data-src="imagens/imgMissao1.jpeg">Anexar</button></li>
+            <li data-src="imagens/imgMissao2.jpeg">imgMissao2.jpeg <button class="repo-attach" data-src="imagens/imgMissao2.jpeg">Anexar</button></li>
+          </ul>
+        </div>
+
+        <section class="list-section materiais-list-section">
+          <h3>Materiais enviados</h3>
+          <ul class="simple-list materiais-list" id="materiais-list"></ul>
+        </section>
+      </div>
+
+      <!-- Modal para criar nova turma -->
+      <div id="modal-criar-turma" class="modal" aria-hidden="true" aria-labelledby="criar-turma-title" role="dialog">
+        <div class="modal-backdrop" data-close="true"></div>
+        <div class="modal-card" role="document">
+          <header class="modal-header">
+            <h3 id="criar-turma-title">Criar Nova Turma</h3>
+            <p class="subtitle">Insira as informações da turma</p>
+          </header>
+
+          <div class="modal-body">
+            <form id="form-criar-turma" novalidate>
+              <label for="turma-nome">Nome da Turma</label>
+              <input id="turma-nome" name="nome" type="text" placeholder="ex: Turma A — Ensino Fundamental" required>
+
+              <label for="turma-serie" class="mt">Série/Nível</label>
+              <input id="turma-serie" name="serie" type="text" placeholder="ex: Ensino Fundamental" required>
+
+              <label for="turma-capacidade" class="mt">Capacidade (alunos)</label>
+              <input id="turma-capacidade" name="capacidade" type="number" placeholder="ex: 30" required>
+
+              <button type="submit" class="btn-primary" style="width:100%;margin-top:20px;">Criar Turma</button>
+            </form>
+          </div>
+
+          <footer class="modal-footer">
+            <button class="btn-back" data-close="true">Cancelar</button>
+          </footer>
+        </div>
+      </div>
+
     </section>
   </main>
+
+  <!-- Modal para listar/adicionar disciplinas e interagir com uma turma -->
+  <div id="modal-disciplinas" class="modal" aria-hidden="true" aria-labelledby="disciplinas-title" role="dialog">
+    <div class="modal-backdrop" data-close="true"></div>
+    <div class="modal-card" role="document">
+      <header class="modal-header">
+        <h3 id="disciplinas-title">Disciplinas — <span id="modal-turma-name">Turma</span></h3>
+        <p class="subtitle">Lista de disciplinas e opção para adicionar uma nova</p>
+      </header>
+
+      <div class="modal-body">
+        <section>
+          <ul id="disciplinas-list" class="simple-list" style="margin-bottom:12px;"></ul>
+        </section>
+
+        <section style="margin-top:12px;">
+          <form id="form-add-disciplina" novalidate>
+            <label for="disc-nome">Nome da disciplina</label>
+            <input id="disc-nome" name="disc_nome" type="text" placeholder="ex: Arte Indígena" required>
+            <button type="submit" class="btn-primary" style="width:100%;margin-top:12px;">+ Adicionar disciplina</button>
+          </form>
+        </section>
+      </div>
+
+      <footer class="modal-footer">
+        <button class="btn-back" data-close="true">Fechar</button>
+      </footer>
+    </div>
+  </div>
+
+  <script src="./script.js"></script>
+  <div class="a11y-controls" aria-hidden="false">
+    <button id="font-decrease" class="font-control" aria-label="Diminuir fonte" title="Diminuir fonte">A-</button>
+    <button id="accessibility-toggle" aria-pressed="false" aria-label="Ativar alto contraste" title="Ativar alto contraste" class="accessibility-toggle" aria-live="polite">
+      <span class="a11y-icon" aria-hidden="true">⚫️</span>
+      <span class="a11y-label">Alto contraste</span>
+    </button>
+    <button id="font-increase" class="font-control" aria-label="Aumentar fonte" title="Aumentar fonte">A+</button>
+  </div>
 </body>
 </html>
