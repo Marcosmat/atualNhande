@@ -396,7 +396,7 @@ body.high-contrast .accessibility-toggle{ background:#111; color:#ffd54f; border
 */
 body.aluno, body.professor, body.visitante {
   /* cor base do texto para páginas de painel */
-  color: #143913; /* verde escuro porém vivo */
+  color: #ffffff /* verde escuro porém vivo */
 }
 
 /* Títulos do painel — mais vibrantes */
@@ -437,6 +437,45 @@ body.visitante .nav-links a { color: #245e24 }
 
 /* Marca (brand) mais forte quando em dashboards */
 body.aluno .brand, body.professor .brand, body.visitante .brand { color: #154d0a }
+
+/* Melhor contraste para textos que ficam sobre a imagem de fundo
+   nas páginas de painel (aluno / professor / visitante) */
+body.aluno .panel-header,
+body.professor .panel-header,
+body.visitante .panel-header {
+  background: rgba(0,0,0,0.48); /* fundo escuro semitransparente */
+  color: #ffffff; /* texto branco para alto contraste */
+  padding: 14px 16px;
+  border-radius: 10px;
+  display: inline-block;
+  margin-bottom: 12px;
+}
+
+body.aluno .panel-title,
+body.professor .panel-title,
+body.visitante .panel-title {
+  color: #ffffff; /* garantir título em branco */
+}
+
+body.aluno .panel-sub,
+body.professor .panel-sub,
+body.visitante .panel-sub {
+  color: rgba(255,255,255,0.9); /* subtítulo com leve transparência */
+}
+
+/* Para listas e pequenos textos que podem aparecer sobre o fundo */
+body.aluno .simple-list,
+body.professor .simple-list,
+body.visitante .simple-list {
+  color: #ffffff;
+}
+
+/* Garantir que os cartões (cards) mantenham o texto legível quando transparentes */
+body.aluno .card,
+body.professor .card,
+body.visitante .card {
+  color: #0f3610; /* mantemos texto escuro dentro dos cartões brancos */
+}
 
 /* Backend status indicator (small label no-intrusive) */
 .backend-status{ position:fixed; right:18px; top:18px; z-index:99999; background: rgba(255,82,82,0.06); color:#6b2f2f; padding:6px 10px; border-radius:8px; font-weight:700; font-size:12px; border:1px solid rgba(0,0,0,0.06); box-shadow: 0 6px 18px rgba(0,0,0,0.06); pointer-events:none; }
@@ -523,5 +562,6 @@ body.aluno .brand, body.professor .brand, body.visitante .brand { color: #154d0a
     min-height: 150px;
   }
 }
+
 
 

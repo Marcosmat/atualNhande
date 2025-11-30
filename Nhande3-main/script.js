@@ -90,7 +90,8 @@ document.querySelectorAll('.nav-links a').forEach(a => {
             // Redirecionar para as telas corretas localmente
             if(localMatch.role === 'professor') return window.location.href = 'professor.html';
             if(localMatch.role === 'aluno') return window.location.href = 'aluno.html';
-            // visitantes ficam na home por enquanto
+            if(localMatch.role === 'visitante') return window.location.href = 'visitante.html';
+            // fallback
             return window.location.href = 'index.html';
           }
         }catch(err){ console.warn('Erro ao checar usuários locais', err); }
@@ -107,6 +108,7 @@ document.querySelectorAll('.nav-links a').forEach(a => {
             const role = result.body.user.role;
             if(role === 'professor') return window.location.href = 'professor.html';
             if(role === 'aluno') return window.location.href = 'aluno.html';
+            if(role === 'visitante') return window.location.href = 'visitante.html';
             return window.location.href = 'index.html';
           } else {
             if(result.status === 401){
