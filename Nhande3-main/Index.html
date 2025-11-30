@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Nhandé — Conectando Saberes</title>
+
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <header class="topbar">
+      <nav class="nav" aria-label="Main navigation">
+        <div style="display:flex;gap:18px;align-items:center;">
+          <a class="brand" href="index.html" aria-label="Ir para a página inicial">Nhandé</a>
+        </div>
+
+        <div style="display:flex; align-items:center; gap:18px;">
+          <div class="nav-links" role="navigation" aria-label="links">
+            <a href="#inicio">Início</a>
+            <a href="missao.html">Missão</a>
+          </div>
+          <a href="#entrar" class="btn-login">Entrar</a>
+        </div>
+      </nav>
+    </header>
+
+    <main>
+      <section class="hero" id="inicio" aria-label="Seção principal">
+        <div class="hero-content">
+          <h1>Nhandé</h1>
+          <p>Conectando Saberes Indígenas através da Educação</p>
+
+          <div class="hero-buttons">
+            <button class="btn-primary" id="btn-start">Saiba mais</button>
+          </div>
+        </div>
+
+        <div class="bottom-fade" aria-hidden="true"></div>
+      </section>
+
+      <section id="info" class="info-section" aria-label="Informações do Nhandé">
+        <div class="container info-scroll" role="list">
+
+          <article class="info-card" role="listitem" tabindex="0">
+            <h3>Aprenda, ensine e explore a cultura dos povos originários</h3>
+            <div class="info-media">
+              <img src="imagens/5.jpg" alt="Pessoas em atividade cultural" />
+            </div>
+          </article>
+
+          <article class="info-card" role="listitem" tabindex="0">
+            <h3>Conteúdos multimídia e materiais didáticos</h3>
+            <div class="info-media">
+              <img src="imagens/6.jpg" alt="Material educativo" />
+            </div>
+          </article>
+
+          <article class="info-card" role="listitem" tabindex="0">
+            <h3>Para professores e alunos</h3>
+            <div class="info-media">
+              <img src="imagens/3.jpeg" alt="Professor e aluno" />
+            </div>
+          </article>
+
+        </div>
+      </section>
+
+      <section id="start">
+        <div class="container">
+          <h2>Bem-vindo ao Nhandé</h2>
+          <p class="lead">Aqui você encontrará materiais, cursos e mídias que valorizam saberes indígenas, professores e alunos unidos por práticas pedagógicas tradicionais e contemporâneas.</p>
+          <p style="margin-top:18px;">Este template é responsivo e usa apenas HTML, CSS e JavaScript.</p>
+        </div>
+      </section>
+    </main>
+
+    <div class="a11y-controls" aria-hidden="false">
+      <button id="font-decrease" class="font-control" aria-label="Diminuir fonte" title="Diminuir fonte">A-</button>
+      <button id="accessibility-toggle" aria-pressed="false" aria-label="Ativar alto contraste" title="Ativar alto contraste" class="accessibility-toggle" aria-live="polite">
+        <span class="a11y-icon" aria-hidden="true">⚫️</span>
+        <span class="a11y-label">Alto contraste</span>
+      </button>
+      <button id="font-increase" class="font-control" aria-label="Aumentar fonte" title="Aumentar fonte">A+</button>
+    </div>
+
+    <div id="modal-entrar" class="modal" aria-hidden="true" aria-labelledby="login-title" role="dialog">
+      <div class="modal-backdrop" data-close="true"></div>
+      <div class="modal-card" role="document">
+        <header class="modal-header">
+          <h3 id="login-title">Bem-vindo ao Nhandé</h3>
+          <p class="subtitle">Plataforma de Educação Indígena</p>
+        </header>
+
+        <div class="modal-body">
+          <form id="login-form" novalidate>
+            <label for="login-email">E-mail</label>
+            <input id="login-email" name="email" type="email" placeholder="seu@email.com" required>
+
+            <label for="login-pass" class="mt">Senha</label>
+            <input id="login-pass" name="senha" type="password" placeholder="********" required>
+
+            <div class="form-row">
+              <label class="inline"><input type="checkbox" id="login-remember"> Lembrar-me</label>
+              <a href="#" class="forgot">Esqueceu a senha?</a>
+            </div>
+
+            <button type="submit" class="btn-primary full">Entrar</button>
+            <p class="muted center">Não tem uma conta? <a href="#cadastrar">Cadastre-se</a></p>
+          </form>
+        </div>
+
+        <footer class="modal-footer">
+          <button class="btn-back" data-close="true">Voltar ao Início</button>
+        </footer>
+      </div>
+    </div>
+
+    <div id="modal-cadastrar" class="modal" aria-hidden="true" aria-labelledby="cadastrar-title" role="dialog">
+      <div class="modal-backdrop" data-close="true"></div>
+      <div class="modal-card register" role="document">
+        <header class="modal-header">
+          <h3 id="cadastrar-title">Cadastre-se</h3>
+          <p class="subtitle">Escolha o tipo de conta e preencha os dados</p>
+        </header>
+
+        <div class="modal-body">
+          <div class="register-choices" role="radiogroup" aria-label="Tipo de usuário">
+            <button class="choice" data-role="aluno" aria-checked="true" role="radio">Aluno</button>
+            <button class="choice" data-role="professor" aria-checked="false" role="radio">Professor</button>
+            <button class="choice" data-role="visitante" aria-checked="false" role="radio">Visitante</button>
+          </div>
+
+          <form id="register-form" novalidate>
+            <div class="form-field" data-for-role="all">
+              <label for="reg-nome">Nome</label>
+              <input id="reg-nome" name="nome" type="text" placeholder="Seu nome" required>
+            </div>
+
+            <div class="form-field" data-for-role="all">
+              <label for="reg-email">E-mail</label>
+              <input id="reg-email" name="email" type="email" placeholder="seu@email.com" required>
+            </div>
+
+            <div class="form-field" data-for-role="aluno" style="display:none;">
+              <label for="reg-matricula">Matrícula</label>
+              <input id="reg-matricula" name="matricula" type="text" placeholder="Número de matrícula">
+            </div>
+
+            <div class="form-field" data-for-role="professor" style="display:none;">
+              <label for="reg-matricula-func">Matrícula funcional</label>
+              <input id="reg-matricula-func" name="matricula_func" type="text" placeholder="Matrícula funcional">
+            </div>
+
+            <div class="form-actions">
+              <button type="submit" class="btn-primary full">Cadastrar</button>
+            </div>
+
+            <p class="muted center">Já tem uma conta? <a href="#entrar">Entrar</a></p>
+          </form>
+        </div>
+
+        <footer class="modal-footer">
+          <button class="btn-back" data-close="true">Voltar</button>
+        </footer>
+      </div>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>

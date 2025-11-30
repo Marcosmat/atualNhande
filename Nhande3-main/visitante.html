@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Nhandé — Visitante</title>
+  <link rel="stylesheet" href="./styles.css">
+  <style>
+    /* Pequenas regras específicas para a tela do visitante */
+    .panel-grid .card.small { padding: 12px; font-size: 0.95rem; }
+    .newsletter-list { list-style: none; padding: 0; margin: 0; }
+    .newsletter-list li { padding: 10px 0; border-bottom: 1px solid rgba(0,0,0,0.06); }
+    #newsletter-modal { position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; background: rgba(0,0,0,0.45); z-index: 60; }
+    #newsletter-modal .modal-card { background: var(--card-bg, #fff); padding: 20px; width: 420px; max-width: 92%; border-radius: 8px; box-shadow: 0 10px 30px rgba(0,0,0,0.18); }
+    #newsletter-modal h2 { margin-top: 0; }
+    #newsletter-modal [data-close] { margin-left: auto; display: inline-block; }
+  </style>
+</head>
+<body class="dashboard visitante">
+  <header class="topbar">
+    <nav class="nav" aria-label="Main navigation">
+      <div style="display:flex;gap:18px;align-items:center;">
+        <a class="brand" href="index.html" aria-label="Ir para a página inicial">Nhandé</a>
+      </div>
+      <div style="display:flex; align-items:center; gap:18px;">
+        <div style="opacity:.85">Painel — Visitante</div>
+        <a href="index.html" class="btn-login">Sair</a>
+      </div>
+    </nav>
+  </header>
+
+  <main class="panel-wrap">
+    <aside class="panel-side" aria-label="Ações do visitante">
+      <div class="panel-actions">
+        <button class="action">Acervo</button>
+        <button class="action">Recursos</button>
+        <button class="action">Ajuda</button>
+      </div>
+    </aside>
+
+    <section class="panel-main">
+      <div class="panel-header">
+        <div class="panel-title">Bem-vindo, Visitante</div>
+        <div class="panel-sub">Acesse o acervo público e as atividades disponibilizadas</div>
+      </div>
+
+      <div class="panel-grid">
+        <div class="card small">Acervo público<br/><small>Materiais e recursos abertos</small></div>
+        <div class="card small">Atividades abertas<br/><small>Exercícios e desafios</small></div>
+        <div class="card wide">Newsletter — Novos materiais</div>
+      </div>
+
+      <section class="list-section">
+        <h3>Últimos materiais</h3>
+        <ul id="materials-list" class="simple-list">
+          <!-- Conteúdo populado via JS -->
+        </ul>
+      </section>
+
+    </section>
+  </main>
+
+  <!-- Modal de newsletter exibido ao entrar -->
+  <div id="newsletter-modal" aria-hidden="true" style="display:none">
+    <div class="modal-card" role="dialog" aria-labelledby="newsletter-title" aria-modal="true">
+      <div style="display:flex;gap:8px;align-items:center;margin-bottom:6px;">
+        <h2 id="newsletter-title">Newsletter — Materiais Recentes</h2>
+        <button data-close aria-label="Fechar" style="margin-left:auto;background:none;border:0;font-size:16px;cursor:pointer">✕</button>
+      </div>
+      <p>Confira os materiais mais recentemente disponibilizados no acervo público.</p>
+      <ul id="newsletter-list" class="newsletter-list">
+        <!-- Itens preenchidos por JS -->
+      </ul>
+      <div style="display:flex;justify-content:flex-end;margin-top:12px;">
+        <button id="newsletter-cta" class="btn-login">Ir para o Acervo</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function(){
+      const modal = document.getElementById('newsletter-modal');
+      const listEl = document.getElementById('newsletter-list');
+      const materialsList = document.getElementById('materials-list');
+
+      // Função para renderizar itens em uma lista (título + breve)
+      function renderItems(target, items){
+        if(!target) return;
+        target.innerHTML = items.map(it => {
+          const date = it.published_at ? (' — ' + new Date(it.published_at).toLocaleDateString()) : '';
+          return `<li><strong>${escapeHtml(it.title)}</strong><br/><small>${escapeHtml(it.summary || '')}${date}</small></li>`;
+        }).join('');
+      }
+
+      function escapeHtml(str){
+        if(!str) return '';
+        return String(str).replace(/[&<>"'`]/g, function(m){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":"&#39;","`":"&#96;"}[m]; });
+      }
+
+      // Fallback estático caso o backend não responda
+      const FALLBACK = [
+        { title: 'Guia Rápido — Como usar o acervo', summary: 'Material introdutório para visitantes', published_at: null },
+        { title: 'Atividade 1 — Observação de campo', summary: 'Registro e reflexão', published_at: null },
+        { title: 'Mídia educativa — Vídeo: Plantas locais', summary: 'Vídeo curto sobre flora regional', published_at: null }
+      ];
+
+      function showModal(){
+        if(!modal) return;
+        modal.style.display = 'flex';
+        modal.setAttribute('aria-hidden','false');
+      }
+
+      function closeModal(){
+        if(!modal) return;
+        modal.style.display = 'none';
+        modal.setAttribute('aria-hidden','true');
+      }
+
+      // Close handlers
+      modal.querySelectorAll('[data-close]').forEach(btn => btn.addEventListener('click', closeModal));
+      document.getElementById('newsletter-cta').addEventListener('click', function(){ closeModal(); /* poderia navegar para acervo real */ });
+
+      // Tentar buscar materiais recentes do backend (endpoint opcional)
+      const API_RECENT = 'http://127.0.0.1:5000/api/materials/recent';
+
+      fetch(API_RECENT, { method: 'GET' })
+        .then(r => r.ok ? r.json() : Promise.reject('no-ok'))
+        .then(data => {
+          // Esperamos um array de objetos { title, summary, published_at }
+          if(Array.isArray(data) && data.length){
+            renderItems(listEl, data);
+            renderItems(materialsList, data);
+            renderItems(listEl, data.slice(0,5));
+            renderItems(document.getElementById('newsletter-list'), data.slice(0,4));
+          } else {
+            throw 'empty';
+          }
+        })
+        .catch(() => {
+          // fallback
+          renderItems(materialsList, FALLBACK);
+          renderItems(document.getElementById('newsletter-list'), FALLBACK.slice(0,4));
+        })
+        .finally(() => {
+          // mostrar modal depois que a lista foi preenchida
+          setTimeout(showModal, 350);
+        });
+
+      // ESC fecha o modal
+      window.addEventListener('keydown', function(e){ if(e.key === 'Escape' && modal && modal.getAttribute('aria-hidden') === 'false'){ closeModal(); } });
+
+    })();
+  </script>
+</body>
+</html>

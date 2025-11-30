@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Nhandé — Painel do Aluno</title>
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body class="dashboard aluno">
+  <header class="topbar">
+    <nav class="nav" aria-label="Main navigation">
+      <div style="display:flex;gap:18px;align-items:center;">
+        <a class="brand" href="index.html" aria-label="Ir para a página inicial">Nhandé</a>
+      </div>
+      <div style="display:flex; align-items:center; gap:18px;">
+        <div style="opacity:.85">Painel — Aluno</div>
+        <a href="index.html" class="btn-login">Sair</a>
+      </div>
+    </nav>
+  </header>
+
+  <main class="panel-wrap">
+    <aside class="panel-side" aria-label="Ações do aluno">
+      <div class="panel-actions">
+        <button class="action">Visão Geral</button>
+        <button class="action">Meus Cursos</button>
+        <button class="action">Atividades</button>
+        <button class="action">Minhas Notas</button>
+        <button class="action">Recursos</button>
+        <button class="action">Mensagens</button>
+        <button class="action">Ajuda</button>
+      </div>
+    </aside>
+
+    <section class="panel-main">
+      <div class="panel-header">
+        <div class="panel-title">Painel do Aluno</div>
+        <div class="panel-sub">Progresso, tarefas pendentes e próximos prazos</div>
+      </div>
+
+      <div class="panel-grid">
+        <div class="card">Progresso do Curso<br/><small>67% concluído</small></div>
+        <div class="card">Tarefas pendentes<br/><small>3 abertas</small></div>
+        <div class="card">Próximo prazo<br/><small>Sexta-feira — Atividade 2</small></div>
+        <div class="card wide">Material recomendado — Mídia educativa</div>
+      </div>
+
+      <section class="list-section">
+        <h3>Atividades recentes</h3>
+        <ul class="simple-list">
+          <li>Atividade 1 — Entregue</li>
+          <li>Atividade 2 — Pendente</li>
+          <li>Atividade 3 — Disponível</li>
+        </ul>
+      </section>
+
+    </section>
+  </main>
+</body>
+</html>

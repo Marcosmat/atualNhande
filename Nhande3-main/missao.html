@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Missão — Nhandé</title>
+
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <header class="topbar">
+      <nav class="nav" aria-label="Main navigation">
+        <div style="display:flex;gap:18px;align-items:center;">
+          <a class="brand" href="index.html" aria-label="Ir para a página inicial">Nhandé</a>
+        </div>
+
+        <div style="display:flex; align-items:center; gap:18px;">
+          <div class="nav-links" role="navigation" aria-label="links">
+            <a href="index.html#inicio">Início</a>
+            <a href="missao.html">Missão</a>
+          </div>
+          <a href="#entrar" class="btn-login">Entrar</a>
+        </div>
+      </nav>
+    </header>
+
+    <main>
+      <section class="hero missao-hero" aria-label="Seção de Missão">
+        <div class="hero-content">
+          <h1>Nossa Missão</h1>
+          <p>Conectando Saberes Indígenas através da Educação</p>
+        </div>
+
+        <div class="bottom-fade" aria-hidden="true"></div>
+      </section>
+
+      <section id="missao-content" class="missao-section" aria-label="Conteúdo da Missão">
+        <div class="container">
+          <article class="missao-card">
+            <h2>O que fazemos</h2>
+            <div class="missao-text">
+             <!-- <div class="missao-text">-->
+                <p>🌿 <strong>Missão da Plataforma Nhandé</strong></p>
+
+                <p>A missão da Nhandé é proteger, valorizar e promover a diversidade cultural dos povos indígenas do Brasil, reconhecendo sua sabedoria ancestral como patrimônio vivo da humanidade. Trabalhamos para fortalecer identidades, línguas, tradições e modos de vida que atravessam séculos e continuam essenciais para a construção de um país mais justo, plural e sustentável. Acreditamos que cada povo indígena é guardião de conhecimentos únicos sobre a relação com a terra, a natureza e a coletividade — conhecimentos que precisam ser respeitados e preservados.</p>
+
+                <p>Nossa atuação busca ampliar a visibilidade das culturas indígenas, garantindo que histórias, expressões artísticas, cosmologias e práticas tradicionais tenham espaço digno em escolas, mídias, centros culturais e políticas públicas. Por meio de projetos educativos, produção de conteúdo, arquivos digitais e ações de conscientização, promovemos a aproximação entre indígenas e não indígenas, combatendo estereótipos e contribuindo para a formação de uma sociedade que reconheça e celebre sua diversidade.</p>
+
+                <p>Também temos como missão apoiar diretamente comunidades indígenas na defesa de seus direitos culturais e territoriais, oferecendo suporte técnico, jurídico, ambiental e educacional. Atuamos lado a lado com lideranças comunitárias, respeitando suas decisões e fortalecendo sua autonomia. Assim, buscamos construir pontes, proteger saberes ancestrais e assegurar que as futuras gerações indígenas continuem transmitindo sua história, sua voz e sua presença fundamental na identidade brasileira.</p>
+                </div>
+
+            <div class="missao-images">
+              <figure class="missao-figure">
+                <img src="imagens/imgMissao1.jpeg" alt="Cacique Raoni">
+                <figcaption>Cacique Raoni</figcaption>
+              </figure>
+
+              <figure class="missao-figure">
+                <img src="imagens/imgMissao2.jpeg" alt="Feira de Educação Indígena">
+                <figcaption>Feira de Educação Indígena</figcaption>
+              </figure>
+            </div>
+
+          </article>
+        </div>
+      </section>
+    </main>
+
+    <div class="a11y-controls" aria-hidden="false">
+      <button id="font-decrease" class="font-control" aria-label="Diminuir fonte" title="Diminuir fonte">A-</button>
+      <button id="accessibility-toggle" aria-pressed="false" aria-label="Ativar alto contraste" title="Ativar alto contraste" class="accessibility-toggle" aria-live="polite">
+        <span class="a11y-icon" aria-hidden="true">⚫️</span>
+        <span class="a11y-label">Alto contraste</span>
+      </button>
+      <button id="font-increase" class="font-control" aria-label="Aumentar fonte" title="Aumentar fonte">A+</button>
+    </div>
+
+    <div id="modal-entrar" class="modal" aria-hidden="true" aria-labelledby="login-title" role="dialog">
+      <div class="modal-backdrop" data-close="true"></div>
+      <div class="modal-card" role="document">
+        <header class="modal-header">
+          <h3 id="login-title">Bem-vindo ao Nhandé</h3>
+          <p class="subtitle">Plataforma de Educação Indígena</p>
+        </header>
+
+        <div class="modal-body">
+          <form id="login-form" novalidate>
+            <label for="login-email">E-mail</label>
+            <input id="login-email" name="email" type="email" placeholder="seu@email.com" required>
+
+            <label for="login-pass" class="mt">Senha</label>
+            <input id="login-pass" name="senha" type="password" placeholder="********" required>
+
+            <button type="submit" class="btn-primary" style="width:100%;margin-top:20px;">Entrar</button>
+          </form>
+        </div>
+
+        <footer class="modal-footer">
+          <p>Não tem conta? <a href="#signup">Cadastre-se</a></p>
+        </footer>
+      </div>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>

@@ -1,0 +1,527 @@
+/* Reset (regras iniciais) */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html,body { height: 100%; font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial; color:#25311b; }
+
+/* NAV (barra de navegação) */
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: #f5f6f0;
+  border-bottom: 1px solid rgba(0,0,0,0.04);
+  backdrop-filter: blur(4px);
+}
+
+.nav {
+  max-width: 1200px;
+  margin: 0 auto;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap: 20px;
+  padding: 14px 20px;
+}
+
+.brand { font-weight:700; color:#526137; font-size:20px; text-decoration: none; display:inline-block }
+
+.nav-links {
+  display:flex;
+  gap:18px;
+  align-items:center;
+  font-size:15px;
+  color:#47543a;
+}
+
+.nav-links a { text-decoration:none; color:inherit; padding:6px 8px; border-radius:8px; }
+.nav-links a:hover { background: rgba(82,97,55,0.06); }
+
+.btn-login {
+  background:#6b7d4e;
+  color:#fff;
+  padding:8px 14px;
+  border-radius:999px;
+  text-decoration:none;
+  font-weight:600;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+}
+.btn-login:hover { transform: translateY(-1px); }
+
+/* HERO (seção principal com imagem de fundo) */
+.hero {
+  min-height: calc(100vh - 66px);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  position:relative;
+  overflow:hidden;
+}
+body {
+  /* Unifica o background do site em uma única imagem */
+  background-image: url('imagens/background.jpeg');
+  background-size: cover;        /* cobre toda a tela */
+  background-position: center;   /* centraliza */
+  background-repeat: no-repeat;  /* não repete */
+  background-attachment: fixed;  /* efeito de fundo fixo */
+}
+
+.hero::before{
+  /* Removemos a imagem duplicada — agora o body fornece a imagem de fundo
+     e ::before age apenas como overlay de cor para melhorar legibilidade */
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: none;
+  background-color: rgba(0,0,0,0.18); /* leve escurecimento para destaque do texto */
+  z-index: 0;
+}
+
+.hero::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  background: linear-gradient(180deg, rgba(0,0,0,0.45) 0%, rgba(0,0,0,0.15) 35%, rgba(0,0,0,0.0) 55%, rgba(255,255,255,0.95) 85%);
+  z-index:1;
+}
+
+.hero-content{
+  position:relative;
+  z-index:2;
+  text-align:center;
+  width:100%;
+  max-width:900px;
+  padding: 80px 24px;
+  color: #fff;
+}
+
+.hero h1{
+  font-size:76px;
+  line-height:0.95;
+  margin-bottom:14px;
+  font-weight:800;
+  text-shadow: 0 6px 20px rgba(0,0,0,0.45);
+}
+
+.hero p{
+  font-size:20px;
+  margin-bottom:26px;
+  opacity:0.95;
+}
+
+.hero-buttons {
+  display:flex;
+  gap:16px;
+  justify-content:center;
+  flex-wrap:wrap;
+}
+
+.btn-primary {
+  background:#61804a;
+  color:white;
+  padding:12px 26px;
+  border-radius:999px;
+  cursor:pointer;
+  font-weight:700;
+  border:none;
+  box-shadow: 0 8px 20px rgba(97,128,74,0.18);
+}
+
+.btn-secondary {
+  background: transparent;
+  color: white;
+  padding:10px 22px;
+  border-radius:999px;
+  border: 1.8px solid rgba(255,255,255,0.7);
+  font-weight:600;
+  backdrop-filter: blur(4px);
+}
+
+.btn-primary:hover,
+.btn-secondary:hover { transform: translateY(-3px); }
+
+/* Fade inferior (gradiente de transição) */
+.bottom-fade {
+  position:absolute;
+  left:0; right:0; bottom:0;
+  height:220px;
+  pointer-events:none;
+  background: linear-gradient(180deg, rgba(255,255,255,0) 0%, rgba(245,246,240,1) 85%);
+  z-index:3;
+}
+
+/* Seção seguinte */
+#start {
+  padding:60px 20px;
+  background: #fbfbf8;
+  color:#20321b;
+}
+
+/* Seção de informações scroller (index) */
+.info-section { padding: 36px 20px; /* remover o fundo translúcido para esconder a imagem de background por trás */
+  background: #fbfbf8; /* fundo sólido (mesmo tom do #start) */
+  border-top: 1px solid rgba(0,0,0,0.03);
+}
+.info-scroll{ display:flex; gap:20px; overflow-x:auto; padding: 12px 4px; -webkit-overflow-scrolling: touch; scroll-snap-type: x mandatory; align-items:stretch; }
+.info-scroll::-webkit-scrollbar{ height:10px }
+.info-scroll::-webkit-scrollbar-thumb{ background: rgba(0,0,0,0.08); border-radius:999px }
+.info-card{ min-width:300px; max-width:420px; height:380px; background: rgba(255,255,255,0.9); border-radius:12px; padding:18px; box-shadow: 0 10px 28px rgba(0,0,0,0.08); scroll-snap-align: start; text-align:center; border:1px solid rgba(0,0,0,0.04); transition: transform .25s ease, box-shadow .25s ease; display:flex; flex-direction:column; justify-content:space-between; }
+.info-card h3{ font-size:20px; margin-bottom:10px; color: #134112 }
+.info-media{ height:200px; overflow:hidden; border-radius:8px; display:flex; align-items:center; justify-content:center; flex: 0 0 200px; }
+.info-media img{ width:100%; height:100%; object-fit:cover; border-radius:8px; display:block; transform:scale(1); transition: transform .35s ease; }
+
+/* Hover / foco: aumentar imagem e destacar o cartão */
+.info-card:hover{ transform: translateY(-8px); box-shadow: 0 20px 48px rgba(0,0,0,0.14); cursor: pointer }
+.info-card:hover .info-media img{ transform: scale(1.08); }
+
+/* Acessibilidade: também aplicar animação quando foco via teclado */
+.info-card:focus-within, .info-card:focus { outline: none; transform: translateY(-6px); box-shadow: 0 18px 40px rgba(0,0,0,0.12); }
+.info-quote{ margin-top:10px; font-weight:800; color: #134112; font-size:16px }
+.info-text{ margin-top:10px; color: #134112 }
+
+@media (max-width:720px){
+  .info-card{ min-width:260px }
+  .info-media{ height:140px }
+  .info-media img{ height:100% }
+}
+
+.container { 
+  max-width:1000px; 
+  margin:0 auto; 
+}
+
+h2 { 
+  font-size:28px; 
+  margin-bottom:16px; 
+  color:#0a2704; 
+}
+
+p.lead { 
+  color:#0a2704; 
+  line-height:1.6; 
+}
+
+/* Responsividade (regras para telas menores) */
+@media (max-width:900px){
+  .hero h1 { font-size:48px; }
+  .nav-links { display:none; }
+}
+
+@media (max-width:480px){
+  .hero h1 { font-size:34px; }
+  .hero p { font-size:16px; }
+  .nav { padding:10px 12px; }
+  .brand { font-size:18px; }
+}
+
+/* Botão de acessibilidade / alternador de contraste (flutuante) */
+.accessibility-toggle{
+  /* default: when used alone the toggle is fixed; if it's inside .a11y-controls
+     the wrapper will reposition it (see .a11y-controls .accessibility-toggle) */
+  position:fixed;
+  right:18px;
+  bottom:18px;
+  /* z-index bem alto para garantir que o botão fique visível e clicável mesmo com modais/sobreposições abertos */
+  z-index:9999;
+  display:flex;
+  align-items:center;
+  gap:8px;
+  background:#fff;
+  color:#20321b;
+  border:1px solid rgba(0,0,0,0.08);
+  padding:10px 12px;
+  border-radius:40px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+  cursor:pointer;
+  font-weight:700;
+  transition: transform .12s ease, opacity .12s ease, background-color .12s ease, color .12s ease;
+}
+.accessibility-toggle:hover{ transform: translateY(-4px) }
+.accessibility-toggle .a11y-icon{ font-size:18px; line-height:1; }
+.accessibility-toggle .a11y-label{ display:inline-block; font-size:13px }
+
+/* Telas pequenas: manter o botão compacto em forma de círculo */
+@media (max-width:480px){
+  .accessibility-toggle{ padding:10px; gap:0; width:48px; height:48px; border-radius:50%; justify-content:center }
+  .accessibility-toggle .a11y-label{ display:none }
+}
+
+/* When the toggle is placed inside the a11y-controls wrapper we override
+   the fixed positioning so the three buttons sit side-by-side */
+.a11y-controls .accessibility-toggle{
+  position:static; /* let the wrapper position it */
+  right: auto; bottom: auto;
+  width: auto; height:44px; padding:8px 12px; border-radius:40px; display:flex; align-items:center; gap:8px;
+}
+
+/* On very small screens stack vertically to avoid cramped layout */
+@media (max-width:420px){
+  .a11y-controls{ flex-direction:column; right:12px; bottom:12px }
+  .a11y-controls .accessibility-toggle{ width:44px; height:44px; padding:8px }
+}
+
+/* Grupo de controles de acessibilidade (contraste + tamanho da fonte) */
+.a11y-controls{ position:fixed; right:18px; bottom:18px; z-index:9999; display:flex; gap:8px; align-items:center }
+
+.font-control{ display:inline-flex; align-items:center; justify-content:center; width:44px; height:44px; border-radius:999px; background:#fff; color:#20321b; border:1px solid rgba(0,0,0,0.08); box-shadow: 0 8px 20px rgba(0,0,0,0.12); cursor:pointer; font-weight:800; font-size:15px }
+.font-control:hover{ transform: translateY(-4px) }
+.font-control[aria-disabled="true"]{ opacity:0.45; cursor:not-allowed; transform:none }
+
+/* Em telas pequenas, empilhar para caber */
+@media (max-width:480px){
+  .a11y-controls{ gap:6px; right:12px; bottom:12px }
+  .font-control{ width:40px; height:40px; font-size:14px }
+}
+
+/* Regras do tema de alto contraste */
+body.high-contrast { background-color: #000000 !important; color: #ffffff !important; }
+
+/* Tornar texto e bordas de alto contraste */
+body.high-contrast, body.high-contrast * {
+  color: #ffffff !important;
+  border-color: #ffffff !important;
+}
+
+/* Manter fundos transparentes por padrão, mas sobrescrever grandes áreas abaixo */
+body.high-contrast * { background-color: transparent !important; }
+
+/* Topbar e áreas principais */
+body.high-contrast .topbar { background-color: #000000 !important; color: #ffffff !important; }
+body.high-contrast a { color: #ffd54f !important; text-decoration: underline !important; }
+body.high-contrast .btn-login { background:#ffd54f !important; color:#000 !important; }
+body.high-contrast .btn-primary { background: #ffd54f !important; color: #000 !important; }
+body.high-contrast .btn-secondary { border-color: #ffd54f !important; color: #fff !important; }
+
+/* Substituir imagem de fundo do hero por fundo sólido escuro para melhorar legibilidade */
+body.high-contrast .hero::before{
+  background-image: none !important;
+  background-color: #000000 !important;
+  opacity: 1 !important;
+  filter: none !important;
+}
+body.high-contrast .bottom-fade{ display:none }
+
+/* Quando o modo alto contraste estiver ativo, alterar aparência do botão */
+body.high-contrast .accessibility-toggle{ background:#111; color:#ffd54f; border-color: rgba(255,213,79,0.18) }
+
+/* Garantir que o alternador seja interativo acima das sobreposições */
+.accessibility-toggle{ pointer-events:auto; }
+
+/* Estilos do modal de login (seção #entrar) */
+.modal{ position: fixed; inset: 0; display:none; align-items:center; justify-content:center; z-index:150; }
+.modal[aria-hidden="false"]{ display:flex; }
+.modal-backdrop{ position:absolute; inset:0; background: rgba(0,0,0,0.6); backdrop-filter: blur(2px); }
+.modal-card{ position:relative; width:420px; max-width:92%; border-radius:12px; overflow:hidden; box-shadow: 0 30px 80px rgba(0,0,0,0.6); background: #ffffff; border: 1px solid rgba(0,0,0,0.06); z-index:3 }
+.modal-header{ background:#6b7d4e; color:#fff; padding:28px 26px; text-align:center }
+.modal-header h3{ font-size:22px; margin-bottom:6px; font-weight:800 }
+.modal-header .subtitle{ font-size:13px; opacity:0.9; margin-top:0 }
+.modal-body{ padding:22px 26px 18px }
+.modal-body label{ display:block; font-size:13px; margin-bottom:8px; color:#3a4a35; font-weight:600 }
+.modal-body input[type="email"], .modal-body input[type="password"]{
+  width:100%; padding:12px 14px; border-radius:10px; border:1px solid rgba(0,0,0,0.06); background:#fbfbf8; margin-bottom:16px; font-size:14px; color:#20321b
+}
+.modal-body input::placeholder{ color:#9aa38e }
+.form-row{ display:flex; align-items:center; justify-content:space-between; gap:8px; margin-bottom:14px }
+.form-row .inline { display:flex; align-items:center; gap:8px; font-size:13px; color:#526137 }
+.form-row .forgot{ font-size:13px; color:#6b7d4e; text-decoration:none }
+.btn-primary.full{ width:100%; border-radius:999px; padding:12px 18px; font-weight:800; }
+.muted{ color:#6c6c6c; font-size:13px; margin:12px 0 }
+.muted.center{ text-align:center }
+.modal-footer{ padding:18px 24px 26px; text-align:center; background: #fbfbf8 }
+.btn-back{ display:inline-block; padding:12px 18px; border-radius:999px; background:transparent; border:1px solid rgba(0,0,0,0.06); width:80%; max-width:320px }
+
+/* Aparência do cartão em telas largas */
+.modal-card{ border-radius:12px; }
+
+@media (max-width:520px){
+  .info-card{ min-width:260px; height:320px }
+  .info-media{ height:160px; flex: 0 0 160px }
+  .modal-body{ padding:18px }
+}
+
+/* Opções de cadastro (Aluno / Professor / Visitante) */
+.register .register-choices{ display:flex; gap:12px; justify-content:space-between; margin-bottom:16px; padding:6px }
+.register .register-choices .choice{
+  flex:1; background:#fff; border-radius:10px; border:1px solid rgba(0,0,0,0.06); padding:12px; text-align:center; cursor:pointer; font-weight:700; color:#3a4a35; transition: transform .12s ease, box-shadow .12s ease, border-color .12s ease;
+}
+.register .register-choices .choice[aria-checked="true"]{ background:#f3f7f0; border-color:#6b7d4e; box-shadow: 0 6px 18px rgba(0,0,0,0.08); transform: translateY(-4px); color:#2f4a2a }
+.register .register-choices .choice:focus{ outline:3px solid rgba(97,128,74,0.16) }
+
+.register .form-field{ margin-bottom:14px }
+.register label{ color:#2f4a2a; font-weight:700 }
+
+/* Largura levemente diferente do cartão do modal de cadastro para combinar com o visual da imagem */
+.modal-card.register{ width:520px; max-width:94% }
+
+@media (max-width:540px){
+  .modal-card.register{ width:92% }
+  .register .register-choices{ flex-direction:column }
+  .register .register-choices .choice{ width:100% }
+}
+
+/* Dashboards: professor / aluno */
+.dashboard .panel-wrap{ display:flex; gap:28px; max-width:1200px; margin:28px auto; padding:10px; }
+.panel-side{ width:260px; min-width:200px; background: #fff; border-radius:12px; padding:14px; border:1px solid rgba(0,0,0,0.04); box-shadow: 0 8px 30px rgba(0,0,0,0.06); height:calc(100vh - 120px); position:sticky; top:66px; align-self:flex-start }
+.panel-actions{ display:flex; flex-direction:column; gap:10px }
+.panel-actions .action{ text-align:left; padding:12px 14px; border-radius:10px; border:1px solid rgba(0,0,0,0.04); background:transparent; font-weight:700; cursor:pointer; color:#2f4a2a }
+.panel-actions .action:hover{ transform: translateY(-2px); background: rgba(97,128,74,0.06) }
+.panel-actions .action:focus{ outline:3px solid rgba(97,128,74,0.12) }
+
+.panel-main{ flex:1; display:flex; flex-direction:column }
+.panel-header{ padding:18px 8px; margin-bottom:8px }
+.panel-title{ font-size:28px; font-weight:800; color:#2f4a2a }
+.panel-sub{ color:#556a4f; margin-top:6px }
+
+.panel-grid{ display:grid; grid-template-columns: repeat(3, 1fr); gap:18px; margin:14px 0 }
+.card{ background:#fff; border-radius:12px; padding:18px; border:1px solid rgba(0,0,0,0.04); box-shadow: 0 10px 26px rgba(0,0,0,0.06); color:#1f3a22; font-weight:700 }
+.card.wide{ grid-column: span 3; text-align:center }
+
+.list-section{ margin-top:18px; background:transparent }
+.simple-list{ list-style:none; margin:8px 0; padding-left:0; color:#3a4a35 }
+.simple-list li{ padding:10px 12px; border-radius:8px; border:1px dashed rgba(0,0,0,0.03); margin-bottom:8px }
+
+/* Small screens: stack sidebar above main content */
+@media (max-width:900px){
+  .dashboard .panel-wrap{ flex-direction:column; padding:12px }
+  .panel-side{ width:100%; height:auto; position:relative; top:auto }
+  .panel-grid{ grid-template-columns: repeat(2, 1fr) }
+  .card.wide{ grid-column: span 2 }
+}
+
+@media (max-width:480px){
+  .panel-grid{ grid-template-columns: 1fr }
+  .card.wide{ grid-column: span 1 }
+}
+
+/* ===== Temas verdes para telas Dashboard (aluno / professor / visitante) =====
+   Tornam os textos mais verdes e com mais contraste sobre o background
+*/
+body.aluno, body.professor, body.visitante {
+  /* cor base do texto para páginas de painel */
+  color: #143913; /* verde escuro porém vivo */
+}
+
+/* Títulos do painel — mais vibrantes */
+body.aluno .panel-title,
+body.professor .panel-title,
+body.visitante .panel-title {
+  color: #1e6b2f; /* destaque mais forte */
+}
+
+/* Subtítulo / descrição do painel */
+body.aluno .panel-sub,
+body.professor .panel-sub,
+body.visitante .panel-sub {
+  color: #2f7a36; /* tom levemente mais claro para hierarquia */
+}
+
+/* Cartões e listas — garantir leitura confortável */
+body.aluno .card,
+body.professor .card,
+body.visitante .card,
+body.aluno .simple-list,
+body.professor .simple-list,
+body.visitante .simple-list {
+  color: #0f3610; /* texto dentro de cards/listas */
+}
+
+/* Ações / botões textuais na sidebar */
+body.aluno .panel-actions .action,
+body.professor .panel-actions .action,
+body.visitante .panel-actions .action {
+  color: #184f15;
+}
+
+/* Links da navbar nestas páginas — manter consistente e levemente mais verde */
+body.aluno .nav-links a,
+body.professor .nav-links a,
+body.visitante .nav-links a { color: #245e24 }
+
+/* Marca (brand) mais forte quando em dashboards */
+body.aluno .brand, body.professor .brand, body.visitante .brand { color: #154d0a }
+
+/* Backend status indicator (small label no-intrusive) */
+.backend-status{ position:fixed; right:18px; top:18px; z-index:99999; background: rgba(255,82,82,0.06); color:#6b2f2f; padding:6px 10px; border-radius:8px; font-weight:700; font-size:12px; border:1px solid rgba(0,0,0,0.06); box-shadow: 0 6px 18px rgba(0,0,0,0.06); pointer-events:none; }
+.backend-status.ok{ background: rgba(79, 198, 79, 0.08); color:#1b5b1b; border-color: rgba(0,0,0,0.06) }
+.backend-status.offline{ background: rgba(255, 82, 82, 0.06); color:#6b2f2f; border-color: rgba(0,0,0,0.06) }
+
+@media (max-width:480px){ .backend-status{ right:12px; top:12px; font-size:11px } }
+
+/* Página de Missão */
+.missao-hero {
+  background-image: url('imagens/background.jpeg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  min-height: calc(100vh - 66px);
+}
+
+.missao-section {
+  padding: 60px 20px;
+  background: #fbfbf8;
+  color: #20321b;
+}
+
+.missao-card {
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 12px;
+  padding: 36px;
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.08);
+  border: 1px solid rgba(0, 0, 0, 0.04);
+}
+
+.missao-card h2 {
+  font-size: 32px;
+  margin-bottom: 24px;
+  color: #0a2704;
+  font-weight: 800;
+}
+
+.missao-text {
+  font-size: 16px;
+  line-height: 1.8;
+  color: #2f4a2a;
+  min-height: 200px;
+}
+
+/* 👉 Negrito aplicado somente aos parágrafos dentro da missão */
+.missao-text p {
+  font-weight: bold;
+}
+
+/* Layout das imagens da missão */
+.missao-images{
+  margin-top:22px;
+  display:flex;
+  gap:14px;
+  flex-wrap:wrap;
+  align-items:flex-start;
+}
+.missao-figure{ flex: 1 1 48%; max-width:48%; }
+.missao-figure img{ width:100%; height:auto; border-radius:8px; object-fit:cover; box-shadow:0 8px 20px rgba(0,0,0,0.08); display:block }
+.missao-figure figcaption{ margin-top:8px; font-weight:700; color:#2f4a2a; text-align:left; font-size:15px }
+
+@media (max-width:900px){
+  .missao-card { padding: 24px; }
+  .missao-card h2 { font-size: 26px; }
+}
+
+@media (max-width:700px){
+  .missao-images{ flex-direction:column; }
+  .missao-figure{ flex-basis:100%; max-width:100%; }
+}
+
+@media (max-width: 480px) {
+  .missao-card {
+    padding: 18px;
+  }
+  
+  .missao-card h2 {
+    font-size: 22px;
+  }
+  
+  .missao-text {
+    min-height: 150px;
+  }
+}
+
+

@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Nhandé — Painel do Professor</title>
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body class="dashboard professor">
+  <header class="topbar">
+    <nav class="nav" aria-label="Main navigation">
+      <div style="display:flex;gap:18px;align-items:center;">
+        <a class="brand" href="index.html" aria-label="Ir para a página inicial">Nhandé</a>
+      </div>
+      <div style="display:flex; align-items:center; gap:18px;">
+        <div style="opacity:.85">Painel — Professor</div>
+        <a href="index.html" class="btn-login">Sair</a>
+      </div>
+    </nav>
+  </header>
+
+  <main class="panel-wrap">
+    <aside class="panel-side" aria-label="Ações do professor">
+      <div class="panel-actions">
+        <button class="action">Visão Geral</button>
+        <button class="action">Turmas</button>
+        <button class="action">Materiais</button>
+        <button class="action">Atividades</button>
+        <button class="action">Avaliações</button>
+        <button class="action">Participantes</button>
+        <button class="action">Mensagens</button>
+        <button class="action">Configurações</button>
+      </div>
+    </aside>
+
+    <section class="panel-main">
+      <div class="panel-header">
+        <div class="panel-title">Painel do Professor</div>
+        <div class="panel-sub">Resumo das turmas e atividades recentes</div>
+      </div>
+
+      <div class="panel-grid">
+        <div class="card">Resumo da Turma<br/><small>10 alunos, 2 atividades abertas</small></div>
+        <div class="card">Próxima Aula<br/><small>Segunda-feira — Projeto Cultural</small></div>
+        <div class="card">Mensagens<br/><small>2 novas mensagens</small></div>
+        <div class="card wide">Criar nova atividade — Modelo rápido</div>
+      </div>
+
+      <section class="list-section">
+        <h3>Turmas atribuídas</h3>
+        <ul class="simple-list">
+          <li>Turma A — Ensino Fundamental</li>
+          <li>Turma B — Ensino Médio</li>
+          <li>Projeto Interdisciplinar — Comunidade</li>
+        </ul>
+      </section>
+
+    </section>
+  </main>
+</body>
+</html>
