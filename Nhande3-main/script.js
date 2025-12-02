@@ -33,6 +33,32 @@ document.querySelectorAll('.nav-links a').forEach(a => {
   });
 });
 
+// ---------- Handlers para autenticação social (Google e Facebook) ----------
+(function(){
+  const googleBtn = document.querySelector('.btn-social-google');
+  const facebookBtn = document.querySelector('.btn-social-facebook');
+
+  if(googleBtn){
+    googleBtn.addEventListener('click', function(e){
+      e.preventDefault();
+      console.log('Social auth: Google sign-in initiated');
+      alert('Autenticação com Google — integração com OAuth 2.0 em desenvolvimento.');
+      // Aqui será integrado o fluxo OAuth de Google (future implementation)
+      // window.location.href = `https://accounts.google.com/o/oauth2/v2/auth?client_id=...&redirect_uri=...`;
+    });
+  }
+
+  if(facebookBtn){
+    facebookBtn.addEventListener('click', function(e){
+      e.preventDefault();
+      console.log('Social auth: Facebook sign-in initiated');
+      alert('Autenticação com Facebook — integração com OAuth em desenvolvimento.');
+      // Aqui será integrado o fluxo OAuth do Facebook (future implementation)
+      // window.location.href = `https://www.facebook.com/v18.0/dialog/oauth?client_id=...&redirect_uri=...`;
+    });
+  }
+})();
+
 // ---------- Comportamento do modal de login ----------
 (function(){
   const modal = document.getElementById('modal-entrar');

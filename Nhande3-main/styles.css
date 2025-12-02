@@ -732,5 +732,189 @@ body.visitante .card {
   }
 }
 
+/* ===== Social Authentication Buttons (Material Design 3) ===== */
+
+/* Divisor visual entre formulário e botões sociais */
+.social-divider {
+  display: flex;
+  align-items: center;
+  margin: 20px 0 16px;
+  gap: 12px;
+}
+
+.social-divider::before,
+.social-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: rgba(0, 0, 0, 0.08);
+}
+
+.social-divider span {
+  font-size: 12px;
+  font-weight: 600;
+  color: #6c6c6c;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Container dos botões sociais */
+.social-auth-buttons {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin: 16px 0;
+}
+
+/* Estilo base do botão social (Material Design 3 Filled Button) */
+.btn-social {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 8px 16px;
+  min-height: var(--social-btn-height);
+  height: var(--social-btn-height);
+  border-radius: 8px;
+  border: none;
+  font-weight: 700;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Ícone SVG dentro do botão */
+.btn-social .social-icon {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+}
+
+/* Theme variables for social buttons geometry */
+:root{ --social-border-thickness:4px; --social-btn-height:44px; }
+
+/* Outlined Google button (white background, colored icon, black text) */
+.btn-social-google.btn-social-outlined{
+  background: #ffffff;
+  color: #0f0f0f;
+  border: var(--social-border-thickness) solid rgba(0,0,0,0.12);
+  box-shadow: none;
+}
+.btn-social-google.btn-social-outlined .social-icon{ /* ensure icon not tinted */
+  /* icon SVG uses explicit fills */
+}
+.btn-social-google.btn-social-outlined:hover{
+  background: #ffffff;
+  box-shadow: 0 2px 8px rgba(16,24,32,0.06);
+  transform: translateY(-2px);
+}
+.btn-social-google.btn-social-outlined:active{
+  transform: translateY(0);
+  box-shadow: 0 1px 4px rgba(16,24,32,0.06);
+}
+.btn-social-google.btn-social-outlined:focus{
+  outline: 2px solid rgba(16,24,32,0.12);
+  outline-offset: 2px;
+}
+.btn-social-google.btn-social-outlined:disabled{
+  opacity: 0.6; cursor:not-allowed; transform:none;
+}
+
+/* Filled Facebook button (brand blue, white icon/text) */
+.btn-social-facebook{
+  background: #1877f2;
+  color: #ffffff;
+  border: var(--social-border-thickness) solid rgba(0,0,0,0.06);
+  box-shadow: 0 2px 6px rgba(24,119,242,0.12);
+}
+.btn-social-facebook:hover{
+  background: #0f66d6;
+  box-shadow: 0 6px 18px rgba(24,119,242,0.18);
+  transform: translateY(-2px);
+}
+.btn-social-facebook:active{
+  background: #0556b0;
+  transform: translateY(0);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+}
+.btn-social-facebook:focus{
+  outline: 2px solid rgba(24,119,242,0.2);
+  outline-offset: 2px;
+}
+.btn-social-facebook:disabled{
+  opacity:0.6; cursor:not-allowed; box-shadow:none;
+}
+
+/* Ripple effect (simulado com ::after) */
+.btn-social::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.2);
+  transform: translate(-50%, -50%);
+  transition: width 0.6s ease, height 0.6s ease;
+}
+
+.btn-social:active::after {
+  width: 100px;
+  height: 100px;
+}
+
+/* Responsividade para telas menores */
+@media (max-width: 520px) {
+  .social-auth-buttons {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+  
+  .btn-social {
+    padding: 11px 14px;
+    font-size: 13px;
+  }
+  
+  .btn-social .social-icon {
+    width: 18px;
+    height: 18px;
+  }
+}
+
+/* Estado em modo alto contraste */
+body.high-contrast .btn-social-google {
+  background: #ffffff;
+  color: #000000;
+  border-color: #ffffff;
+}
+
+body.high-contrast .btn-social-google:hover {
+  background: #f0f0f0;
+}
+
+body.high-contrast .btn-social-facebook {
+  background: #ffd54f;
+  color: #000000;
+  border-color: #ffd54f;
+}
+
+body.high-contrast .btn-social-facebook:hover {
+  background: #ffca28;
+}
+
+body.high-contrast .social-divider span {
+  color: #ffffff;
+}
+
+body.high-contrast .social-divider::before,
+body.high-contrast .social-divider::after {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+
 
 
