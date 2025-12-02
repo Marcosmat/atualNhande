@@ -203,7 +203,9 @@ document.querySelectorAll('.nav-links a').forEach(a => {
   // Map clicks from side menu to views
   panelActions.forEach(btn => {
     btn.addEventListener('click', function(){
-      const text = (this.textContent || this.innerText || '').trim();
+      // Extrair apenas o texto do rótulo (último <span>) para evitar incluir conteúdo do ícone
+      const labelSpan = this.querySelector('span:last-of-type');
+      const text = (labelSpan ? labelSpan.textContent : this.textContent || this.innerText || '').trim();
       const id = toId(text);
       // If user clicked 'Visão Geral' (or similar), restore default
       if(/visao|visão|visao-geral|visao-geral|geral/i.test(text)){
@@ -639,7 +641,9 @@ document.querySelectorAll('.nav-links a').forEach(a => {
   // Event listeners para os botões do menu lateral
   panelActions.forEach((btn, idx) => {
     btn.addEventListener('click', function(){
-      const text = this.textContent.trim();
+      // Extrair apenas o texto do rótulo (último <span>) para evitar incluir conteúdo do ícone
+      const labelSpan = this.querySelector('span:last-of-type');
+      const text = (labelSpan ? labelSpan.textContent : this.textContent || '').trim();
       if(text === 'Turmas'){
         showView('turmas');
       } else if(text === 'Visão Geral'){

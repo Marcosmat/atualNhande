@@ -361,7 +361,9 @@ body.high-contrast .accessibility-toggle{ background:#111; color:#ffd54f; border
 .dashboard .panel-wrap{ display:flex; gap:28px; max-width:1200px; margin:28px auto; padding:10px; }
 .panel-side{ width:260px; min-width:200px; background: #fff; border-radius:12px; padding:14px; border:1px solid rgba(0,0,0,0.04); box-shadow: 0 8px 30px rgba(0,0,0,0.06); height:calc(100vh - 120px); position:sticky; top:66px; align-self:flex-start }
 .panel-actions{ display:flex; flex-direction:column; gap:10px }
-.panel-actions .action{ text-align:left; padding:12px 14px; border-radius:10px; border:1px solid rgba(0,0,0,0.04); background:transparent; font-weight:700; cursor:pointer; color:#2f4a2a }
+.panel-actions .action{ text-align:left; padding:12px 14px; border-radius:10px; border:1px solid rgba(0,0,0,0.04); background:transparent; font-weight:700; cursor:pointer; color:#2f4a2a; display:flex; align-items:center; gap:12px; }
+.panel-actions .action .material-symbols-outlined{ font-size:24px; font-weight:400; color:#556a4f; flex-shrink:0; }
+.panel-actions .action span:last-child{ flex:1; }
 .panel-actions .action:hover{ transform: translateY(-2px); background: rgba(97,128,74,0.06) }
 .panel-actions .action:focus{ outline:3px solid rgba(97,128,74,0.12) }
 
@@ -886,13 +888,13 @@ body.visitante .card {
 }
 
 /* Estado em modo alto contraste */
-body.high-contrast .btn-social-google {
+body.high-contrast .btn-social-google.btn-social-outlined {
   background: #ffffff;
   color: #000000;
   border-color: #ffffff;
 }
 
-body.high-contrast .btn-social-google:hover {
+body.high-contrast .btn-social-google.btn-social-outlined:hover {
   background: #f0f0f0;
 }
 
@@ -915,6 +917,23 @@ body.high-contrast .social-divider::after {
   background: rgba(255, 255, 255, 0.3);
 }
 
+/* Material Symbols styling (outlined icons in sidebar) */
+.material-symbols-outlined {
+  font-family: 'Material Symbols Outlined';
+  font-weight: 400;
+  font-style: normal;
+  display: inline-block;
+  line-height: 1;
+  text-transform: none;
+  letter-spacing: normal;
+  word-wrap: normal;
+  white-space: nowrap;
+  direction: ltr;
+}
 
+/* Em modo alto contraste, ícones ficam mais visíveis */
+body.high-contrast .panel-actions .action .material-symbols-outlined {
+  color: #ffd54f;
+}
 
 
